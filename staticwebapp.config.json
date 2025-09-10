@@ -1,0 +1,34 @@
+{
+  "routes": [
+    {
+      "route": "/admin/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/user/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/404.html",
+    "exclude": ["/admin/*", "/user/*", "/api/*", "*.{css,js,jpg,png,gif,ico,svg}"]
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".js": "text/javascript",
+    ".css": "text/css"
+  },
+  "globalHeaders": {
+    "Cache-Control": "public, max-age=300"
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html",
+      "statusCode": 404
+    }
+  }
+}

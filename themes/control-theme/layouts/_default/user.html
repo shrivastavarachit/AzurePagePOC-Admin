@@ -1,0 +1,170 @@
+{{ define "head" }}
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    .user-display {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.5s ease;
+        position: relative;
+    }
+    
+    .user-display.state-on {
+        background-color: #ff0000;
+    }
+    
+    .user-display.state-off {
+        background-color: #000000;
+    }
+    
+    .status-text {
+        color: white;
+        font-size: 3rem;
+        font-weight: bold;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        opacity: 0.8;
+        user-select: none;
+    }
+    
+    .admin-link {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        transition: all 0.3s ease;
+        opacity: 0.7;
+    }
+    
+    .admin-link:hover {
+        opacity: 1;
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+    }
+    
+    .refresh-indicator {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255,255,255,0.5);
+        font-size: 0.8rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .refresh-indicator.show {
+        opacity: 1;
+    }
+    
+    @media (max-width: 768px) {
+        .status-text {
+            font-size: 2rem;
+        }
+        
+        .admin-link {
+            top: 10px;
+            right: 10px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+{{ end }}
+
+{{ define "main" }}
+<div id="userDisplay" class="user-display state-off">
+    <div class="status-text" id="statusText">
+        SYSTEM OFF
+    </div>
+    
+    <a href="/admin/" class="admin-link">
+        ⚙️ Admin Panel
+    </a>
+    
+    <div id="refreshIndicator" class="refresh-indicator">
+        Checking for updates...
+    </div>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+    let currentState = 'off';
+    
+    // Load current state
+    function loadState() {
+        // Get state from localStorage for demo
+        const saved = localStorage.getItem('systemState');
+        if (saved) {
+            currentState = saved;
+        }
+        updateDisplay();
+    }
+    
+    // Update the display based on current state
+    function updateDisplay() {
+        const display = document.getElementById('userDisplay');
+        const statusText = document.getElementById('statusText');
+        
+        if (currentState === 'on') {
+            display.className = 'user-display state-on';
+            statusText.textContent = 'SYSTEM ON';
+        } else {
+            display.className = 'user-display state-off';
+            statusText.textContent = 'SYSTEM OFF';
+        }
+    }
+    
+    // Check for state changes periodically
+    function checkForUpdates() {
+        const refreshIndicator = document.getElementById('refreshIndicator');
+        refreshIndicator.classList.add('show');
+        
+        // In demo mode, check localStorage
+        const saved = localStorage.getItem('systemState');
+        if (saved && saved !== currentState) {
+            currentState = saved;
+            updateDisplay();
+        }
+        
+        setTimeout(() => {
+            refreshIndicator.classList.remove('show');
+        }, 1000);
+    }
+    
+    // Auto-refresh every 5 seconds to check for updates
+    setInterval(checkForUpdates, 5000);
+    
+    // Load state on page load
+    document.addEventListener('DOMContentLoaded', loadState);
+    
+    // Listen for storage changes (when admin updates state in another tab)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'systemState') {
+            currentState = e.newValue || 'off';
+            updateDisplay();
+        }
+    });
+    
+    // Prevent right-click context menu for cleaner display
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+</script>
+{{ end }}

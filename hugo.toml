@@ -1,0 +1,21 @@
+baseURL = "https://your-site.azurestaticapps.net"
+languageCode = "en-us"
+title = "Admin Control System"
+theme = "control-theme"
+
+[params]
+  adminPath = "/admin"
+  userPath = "/user"
+
+[build]
+  publish = "public"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML"]
+  section = ["HTML"]
+  page = ["HTML"]

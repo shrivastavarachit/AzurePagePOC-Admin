@@ -1,0 +1,7 @@
+name = "Control Theme"
+license = "MIT"
+description = "Admin and User Control Theme"
+min_version = "0.119.0"
+
+[author]
+  name = "Control System"

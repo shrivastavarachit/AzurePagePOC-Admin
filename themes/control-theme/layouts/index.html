@@ -1,0 +1,105 @@
+{{ define "head" }}
+<style>
+    body {
+        background: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    
+    .home-panel {
+        background: white;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+    }
+    
+    .home-panel h1 {
+        color: #333;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+    }
+    
+    .links {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .link-btn {
+        display: block;
+        padding: 1.5rem 2rem;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .admin-link {
+        background: #f44336;
+        color: white;
+    }
+    
+    .admin-link:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    }
+    
+    .user-link {
+        background: #333;
+        color: white;
+    }
+    
+    .user-link:hover {
+        background: #222;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .description {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #e3f2fd;
+        border-radius: 8px;
+        color: #1976d2;
+        font-size: 0.9rem;
+    }
+</style>
+{{ end }}
+
+{{ define "main" }}
+<div class="home-panel">
+    <h1>🎛️ Control System</h1>
+    
+    <div class="links">
+        <a href="/admin/" class="link-btn admin-link">
+            ⚙️ Admin Panel
+            <div style="font-size: 0.8em; margin-top: 0.5rem; opacity: 0.9;">
+                Control the system state (ON/OFF)
+            </div>
+        </a>
+        
+        <a href="/user/" class="link-btn user-link">
+            👁️ User Display
+            <div style="font-size: 0.8em; margin-top: 0.5rem; opacity: 0.9;">
+                View the current state (Red/Black screen)
+            </div>
+        </a>
+    </div>
+    
+    <div class="description">
+        <p><strong>How it works:</strong></p>
+        <p>• Admin can turn system ON (red screen) or OFF (black screen)</p>
+        <p>• Users see the corresponding colored screen</p>
+        <p>• Changes are synchronized across all user displays</p>
+    </div>
+</div>
+{{ end }}

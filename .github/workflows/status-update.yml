@@ -1,0 +1,77 @@
+name: Status Update Notification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/services.json'
+      - 'data/status.json'
+      - 'data/maintenance.json'
+      - 'content/incidents/**'
+
+jobs:
+  notify_status_change:
+    runs-on: ubuntu-latest
+    name: Notify Status Change
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Check for status changes
+        id: check_changes
+        run: |
+          # Check if services.json changed
+          if git diff --name-only HEAD~1 HEAD | grep -q "data/services.json"; then
+            echo "services_changed=true" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check if status.json changed
+          if git diff --name-only HEAD~1 HEAD | grep -q "data/status.json"; then
+            echo "status_changed=true" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check if incidents were added/modified
+          if git diff --name-only HEAD~1 HEAD | grep -q "content/incidents/"; then
+            echo "incidents_changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack notification
+        if: steps.check_changes.outputs.services_changed == 'true' || steps.check_changes.outputs.status_changed == 'true' || steps.check_changes.outputs.incidents_changed == 'true'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": "🚨 Tekion IT Status Page Updated",
+              "attachments": [
+                {
+                  "color": "warning",
+                  "fields": [
+                    {
+                      "title": "Status Page",
+                      "value": "The status page has been updated with new information.",
+                      "short": false
+                    },
+                    {
+                      "title": "View Status",
+                      "value": "<https://polite-desert-02dfd7d10.1.azurestaticapps.net|Check Status Page>",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Teams notification
+        if: steps.check_changes.outputs.services_changed == 'true' || steps.check_changes.outputs.status_changed == 'true' || steps.check_changes.outputs.incidents_changed == 'true'
+        uses: aliencube/microsoft-teams-actions@v0.8.0
+        with:
+          webhook_uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          title: "Tekion IT Status Page Updated"
+          summary: "The status page has been updated with new information."
+          text: "The Tekion IT status page has been updated. Please check the status page for the latest information."
+          theme_color: "warning"

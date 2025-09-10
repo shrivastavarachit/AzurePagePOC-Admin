@@ -1,0 +1,13 @@
+{
+  "name": "control-system",
+  "version": "1.0.0",
+  "description": "Admin and User Control System with Hugo",
+  "scripts": {
+    "build": "hugo --gc --minify",
+    "dev": "hugo server -D",
+    "clean": "rm -rf public"
+  },
+  "keywords": ["hugo", "admin", "control", "azure"],
+  "author": "Control System",
+  "license": "MIT"
+}
